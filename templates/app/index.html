@@ -175,14 +175,19 @@
         let data = await response.json();
         if (sidebarApp.loadingPlaceId != placeId) return;
 
-        // Нормализуем имена полей — шаблон использует description_short и long_description
+        function cleanPWrapper(htmlStr) {
+          if (!htmlStr) return '';
+          const match = htmlStr.match(/^<p>(.*?)<\/p>$/s);
+          return match ? match[1] : htmlStr;
+        }
+
         sidebarApp.selectedPlace = {
           ...data,
           title: data.title || '',
           placeId: placeId,
           imgs: data.imgs || [],
-          description_short: (data.description_short || data.short_description || '').trim(),
-          long_description: (data.description_long || data.long_description || '').trim()
+          description_short: cleanPWrapper((data.description_short || '').trim()),
+          long_description: (data.description_long || '').trim()
         };
       } catch (err) {
         console.error('Error loading place details', err);

@@ -1,5 +1,6 @@
 # models.py
 from django.db import models
+from django.utils.html import format_html
 
 class Place(models.Model):
     title = models.CharField('Название', max_length=200)
@@ -14,10 +15,12 @@ class Place(models.Model):
     class Meta:
         verbose_name = 'Место'
         verbose_name_plural = 'Места'
+        ordering = ['id']
 
 
 def place_image_upload_to(instance, filename):
     return f'places/{instance.place.id}/{filename}'
+
 
 class PlaceImage(models.Model):
     place = models.ForeignKey(
@@ -27,7 +30,16 @@ class PlaceImage(models.Model):
         verbose_name='Место'
     )
     image = models.ImageField('Изображение', upload_to=place_image_upload_to)
-    order = models.PositiveIntegerField('Порядок', default=0)
+    order = models.PositiveIntegerField('Порядок', default=0, db_index=True)
+
+    def image_preview(self):
+        if self.image:
+            return format_html(
+                '<img src="{}" style="max-height: 100px; max-width: 100px; border-radius: 4px;" />',
+                self.image.url
+            )
+        return "Нет изображения"
+    image_preview.short_description = 'Превью'
 
     class Meta:
         ordering = ['order']
