@@ -58,7 +58,7 @@
       <div class="place-description" v-if="selectedPlace">
         <img v-if="mainPhotoSrc" v-bind:src="mainPhotoSrc" class="d-block shadow mb-3 rounded" v-bind:alt="selectedPlace.title">
         <h5 class="mb-3">${ selectedPlace.title }</h5>
-        <p v-if="selectedPlace.description_short" v-text="selectedPlace.description_short"></p>
+        <p v-if="selectedPlace.description_short" v-html="selectedPlace.description_short"></p>
 
         <div id="place-photos" class="carousel slide mb-3 shadow" data-ride="carousel" data-interval="5000">
           <ol class="carousel-indicators">
